@@ -1,12 +1,25 @@
 # claude-ask-choice
 
-A small plugin ("mod") for Claude Code's terminal UI. When a reply ends with a choice-based question written in plain text, it prompts the model to re-ask it with the `AskUserQuestion` tool, so the user can select an option instead of typing.
+A small plugin ("mod") for Claude Code's terminal UI that turns a choice-based question at the end of a reply into a selectable menu.
+When a reply ends with a question you could answer by picking an option, but it is written in plain text, the plugin has the model re-ask it with the `AskUserQuestion` tool, so you can select an option instead of typing.
 
 日本語の説明は [README.ja.md](README.ja.md) にあります。
 
 In-app messages are in Japanese.
 
-## Status
+## When to use
+
+- When Claude ends a reply with a question that has a few clear answers, but writes it as prose and you have to type the answer back.
+- When you work with Claude in Japanese: the question indicators include the Japanese endings `ですか`, `ますか`, `でしょうか`, `ましょうか` as well as `?` / `？`.
+- When you want the re-ask to happen only where it is needed: it steps in once per question, and never on a turn that already used `AskUserQuestion`.
+
+Not for you if you run Claude non-interactively (`claude -p`), if you do not want one extra classification call for each reply that ends with a question, or if you are on Windows (untested).
+
+## What it looks like
+
+After a reply that ends with a choice-based question in prose, a short English message starting with `[MOD ask-choice]` appears on screen, shown by Claude Code as a message sent by the plugin. The model then re-asks the same question with the `AskUserQuestion` picker. Replies without a question indicator are left as they are.
+
+## Requirements
 
 - Built on Claude Code's plugin hooks ("mods") API, which is in early access and may change between versions.
 - Developed and tested with Claude Code 2.1.287 to 2.1.289 on macOS.
