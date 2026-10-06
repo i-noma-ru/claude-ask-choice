@@ -1,0 +1,5 @@
+{
+  "name": "ask-choice",
+  "version": "0.1.0",
+  "description": "返答に、選んで答えられる問いが文章のまま残っていたら、選択式の質問（AskUserQuestion）で聞き直させる"
+}
