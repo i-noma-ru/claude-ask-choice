@@ -56,6 +56,22 @@ claude --plugin-dir /path/to/claude-ask-choice
 
 送った文は、プラグインが送った文として画面に表示されます。
 
+## 読むものと送るもの
+
+このプラグインがセッションから読むものと、プロンプトに入れるものの全部です。送り先はいまの Claude Code セッションのモデルだけで、保存はしません。
+
+**読むもの:** 終わったばかりの返答の本文（`turn.complete`）、ターンの終わり方、サブエージェントの返答かどうか、画面のある実行かどうか、そのターンで `AskUserQuestion` が呼ばれたかどうか。利用者の入力、ファイル、環境変数は読みません。
+
+**分類に渡すもの:** 返答の末尾 1500 字（コードブロックと行内コードを除く）と、固定の分類ラベル 3 つ。Claude Code の `$.model.classify` を通じて、セッションと同じモデルに渡します。
+
+**プロンプトとして送るもの:** 次の固定の英文 1 つだけです。毎回同じ文で、返答や会話の中身は一切含みません。
+
+```
+[MOD ask-choice] Your last reply left a pick-one question for the user in prose.
+Re-ask it with AskUserQuestion: put the deciding facts and your recommendation in the question text and the option descriptions.
+Do not repeat the report body. If the question truly needs a free-form answer, say so in one line.
+```
+
 ## テスト
 
 ```

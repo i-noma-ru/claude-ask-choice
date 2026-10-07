@@ -56,6 +56,22 @@ It does nothing if the turn already used `AskUserQuestion`, in non-interactive r
 
 The submitted message is visible on screen, shown by Claude Code as a message sent by the plugin.
 
+## What the plugin reads and what it submits
+
+This section lists everything the plugin reads from the session and everything it puts into a prompt. Nothing is sent anywhere other than the model of the current Claude Code session, and nothing is stored.
+
+**What it reads:** the text of the reply that just finished (`turn.complete`), the turn's end reason, whether the turn belongs to a subagent, whether the session is interactive, and whether `AskUserQuestion` was called during the turn. It does not read the user's prompts, files, or environment variables.
+
+**What it sends to the classifier:** the last 1,500 characters of the reply, with fenced code blocks and inline code removed, together with three fixed category labels (written in Japanese in the source). This goes to the session's own model through Claude Code's `$.model.classify` API.
+
+**What it submits as a prompt:** one fixed English message, always the same text and never containing any part of the reply or the conversation:
+
+```
+[MOD ask-choice] Your last reply left a pick-one question for the user in prose.
+Re-ask it with AskUserQuestion: put the deciding facts and your recommendation in the question text and the option descriptions.
+Do not repeat the report body. If the question truly needs a free-form answer, say so in one line.
+```
+
 ## Tests
 
 ```
