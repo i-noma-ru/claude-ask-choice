@@ -1,5 +1,13 @@
 {
   "name": "ask-choice",
-  "version": "0.1.0",
-  "description": "返答に、選んで答えられる問いが文章のまま残っていたら、選択式の質問（AskUserQuestion）で聞き直させる"
+  "version": "0.1.1",
+  "description": "When a reply ends with a choice-based question written in plain text, has the model re-ask it with the AskUserQuestion picker so you can select an option instead of typing.",
+  "author": {
+    "name": "i-noma-ru",
+    "url": "https://github.com/i-noma-ru"
+  },
+  "homepage": "https://github.com/i-noma-ru/claude-ask-choice",
+  "repository": "https://github.com/i-noma-ru/claude-ask-choice",
+  "license": "MIT",
+  "keywords": ["claude-code", "mod", "AskUserQuestion", "ui"]
 }
