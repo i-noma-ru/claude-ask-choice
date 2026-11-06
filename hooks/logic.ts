@@ -17,7 +17,8 @@ export const LABELS = [CHOICE, '自由に書いて答える問いだけがある
  */
 export const BOUNCE = [
   '[MOD ask-choice] Your last reply left a pick-one question for the user in prose.',
-  'Re-ask it with AskUserQuestion: put the deciding facts and your recommendation in the question text and the option descriptions.',
+  'If the decision is reversible, stays inside the current work and has a clear recommendation, do not ask: take the recommendation and report it in one line, without a question.',
+  'Otherwise re-ask it with AskUserQuestion: put the deciding facts and your recommendation in the question text and the option descriptions.',
   'Do not repeat the report body. If the question truly needs a free-form answer, say so in one line.',
 ].join('\n')
 

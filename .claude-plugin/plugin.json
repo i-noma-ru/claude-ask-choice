@@ -1,6 +1,6 @@
 {
   "name": "ask-choice",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "When a reply ends with a choice-based question written in plain text, has the model re-ask it with the AskUserQuestion picker so you can select an option instead of typing.",
   "author": {
     "name": "i-noma-ru",
