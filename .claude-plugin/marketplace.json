@@ -1,7 +1,7 @@
 {
   "name": "claude-ask-choice",
   "metadata": {
-    "description": "Claude Code mod: when a reply ends with a choice-based question in plain text, has the model re-ask it with AskUserQuestion."
+    "description": "Claude Code mod: when a reply ends with a choice-based question in plain text, has the model re-ask it with AskUserQuestion, or take its recommendation without asking if the decision is small and reversible."
   },
   "owner": {
     "name": "i-noma-ru"
@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "ask-choice",
-      "description": "When a reply ends with a choice-based question written in plain text, prompts the model to re-ask it with the AskUserQuestion tool so the user can select an option instead of typing.",
+      "description": "When a reply ends with a choice-based question written in plain text, prompts the model to re-ask it with the AskUserQuestion tool so the user can select an option instead of typing, or to take its recommendation without asking if the decision is small and reversible.",
       "source": "./",
       "category": "productivity",
       "homepage": "https://github.com/i-noma-ru/claude-ask-choice"

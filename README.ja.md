@@ -2,6 +2,7 @@
 
 Claude Code のターミナル画面で使う、小さなプラグイン（MOD）です。返答の最後にある「選んで答えられる問い」を、選択式のメニューに変えます。
 返答の最後に選んで答えられる問いが文章のまま残っていると、文章を打って答えることになるので、`AskUserQuestion` ツールで聞き直すようモデルに送り返し、選択肢から選べるようにします。
+小さな判断（取り消せて、影響がその作業の中で閉じ、おすすめが明らかなもの）については、聞かずにおすすめで進めて 1 行で報告するようモデルに伝えます。そのため、こうした問いはモデルが利用者に聞かずに決めることがあります。
 
 English: [README.md](README.md)
 
@@ -13,11 +14,11 @@ English: [README.md](README.md)
 - Claude と日本語でやり取りしているとき。問いの目印には `?`・`？` のほか、「ですか」「ますか」「でしょうか」「ましょうか」の語尾が含まれます。
 - 必要なところだけ聞き直してほしいとき。聞き直しは 1 つの問いに 1 回だけで、そのターンで既に `AskUserQuestion` を使っていれば何もしません。
 
-向かないとき: 画面の無い実行（`claude -p`）で使う場合、問いで終わる返答ごとに分類の呼び出しが 1 回増えるのを避けたい場合、Windows で使う場合（未確認）。
+向かないとき: すべての問いに自分で答えたい場合、画面の無い実行（`claude -p`）で使う場合、問いで終わる返答ごとに分類の呼び出しが 1 回増えるのを避けたい場合、Windows で使う場合（未確認）。
 
 ## 動くとこう見える
 
-選んで答えられる問いが文章のまま残った返答のあと、`[MOD ask-choice]` で始まる短い英語の文が、プラグインが送った文として画面に表示されます。続けてモデルが同じ問いを `AskUserQuestion` の選択式で聞き直します。問いの目印が無い返答はそのままです。
+選んで答えられる問いが文章のまま残った返答のあと、`[MOD ask-choice]` で始まる短い英語の文が、プラグインが送った文として画面に表示されます。続けてモデルが同じ問いを `AskUserQuestion` の選択式で聞き直します。小さな判断なら、おすすめで進めて 1 行で報告します。問いの目印が無い返答はそのままです。
 
 ## 動作条件
 
@@ -48,7 +49,7 @@ claude --plugin-dir /path/to/claude-ask-choice
 
 1. 末尾に問いの目印が無ければ、何もしません。目印は、行末の `?`・`？`・「ですか」「ますか」「でしょうか」「ましょうか」、「選んでください」「教えてください」「返信してください」「決めてください」、記号 `🚦` です。
 2. 目印があれば、セッションと同じモデルに、末尾を次の 3 つのどれかへ分類させます。選択肢から選んで答えられる問いがある／自由に書いて答える問いだけがある／利用者への問いは無い。
-3. 1 つ目のときだけ、`AskUserQuestion` で聞き直すよう伝える短い英語の文（`[MOD ask-choice]` で始まる）を送ります。
+3. 1 つ目のときだけ、短い英語の文（`[MOD ask-choice]` で始まる）を送ります。文の内容は、取り消せて、影響がその作業の中で閉じ、おすすめが明らかな判断なら聞かずにおすすめで進めること、それ以外は `AskUserQuestion` で聞き直すことです。どちらに当たるかはモデルが判断し、プラグインは判断しません。
 
 次の場合は何もしません。そのターンで `AskUserQuestion` を使っている／画面の無い実行（`claude -p`）／サブエージェントの返答／中断やエラーで終わったターン／聞き直しを送った直後のターン（聞き直しは 1 つの問いに 1 回だけ）。
 
@@ -68,7 +69,8 @@ claude --plugin-dir /path/to/claude-ask-choice
 
 ```
 [MOD ask-choice] Your last reply left a pick-one question for the user in prose.
-Re-ask it with AskUserQuestion: put the deciding facts and your recommendation in the question text and the option descriptions.
+If the decision is reversible, stays inside the current work and has a clear recommendation, do not ask: take the recommendation and report it in one line, without a question.
+Otherwise re-ask it with AskUserQuestion: put the deciding facts and your recommendation in the question text and the option descriptions.
 Do not repeat the report body. If the question truly needs a free-form answer, say so in one line.
 ```
 

@@ -2,6 +2,7 @@
 
 A small plugin ("mod") for Claude Code's terminal UI that turns a choice-based question at the end of a reply into a selectable menu.
 When a reply ends with a question you could answer by picking an option, but it is written in plain text, the plugin has the model re-ask it with the `AskUserQuestion` tool, so you can select an option instead of typing.
+For a small decision (reversible, confined to the current work, with a clear recommendation), the message tells the model not to ask, but to take its recommendation and report it in one line. So the model may settle such a question without you.
 
 日本語の説明は [README.ja.md](README.ja.md) にあります。
 
@@ -13,11 +14,11 @@ In-app messages are in Japanese.
 - When you work with Claude in Japanese: the question indicators include the Japanese endings `ですか`, `ますか`, `でしょうか`, `ましょうか` as well as `?` / `？`.
 - When you want the re-ask to happen only where it is needed: it steps in once per question, and never on a turn that already used `AskUserQuestion`.
 
-Not for you if you run Claude non-interactively (`claude -p`), if you do not want one extra classification call for each reply that ends with a question, or if you are on Windows (untested).
+Not for you if you want every question put to you, if you run Claude non-interactively (`claude -p`), if you do not want one extra classification call for each reply that ends with a question, or if you are on Windows (untested).
 
 ## What it looks like
 
-After a reply that ends with a choice-based question in prose, a short English message starting with `[MOD ask-choice]` appears on screen, shown by Claude Code as a message sent by the plugin. The model then re-asks the same question with the `AskUserQuestion` picker. Replies without a question indicator are left as they are.
+After a reply that ends with a choice-based question in prose, a short English message starting with `[MOD ask-choice]` appears on screen, shown by Claude Code as a message sent by the plugin. The model then re-asks the same question with the `AskUserQuestion` picker or, for a small decision, takes its recommendation and reports it in one line. Replies without a question indicator are left as they are.
 
 ## Requirements
 
@@ -48,7 +49,7 @@ At the end of each turn, the plugin inspects the end of the reply (the last 1,50
 
 1. If the text shows no sign of a question, nothing happens. Indicators include: a line ending in `?` / `？` or the Japanese endings `ですか`, `ますか`, `でしょうか`, `ましょうか`; the phrases `選んでください`, `教えてください`, `返信してください`, `決めてください`; or the mark `🚦`.
 2. If an indicator is present, the plugin asks the session's model to classify the text into one of three categories: a question answerable by choosing from options, a question requiring a free-form answer, or no question for the user.
-3. Only for the first category, it submits a short English message (starting with `[MOD ask-choice]`) instructing the model to re-ask with `AskUserQuestion`.
+3. For the first category only, it submits a short English message (starting with `[MOD ask-choice]`) instructing the model to re-ask with `AskUserQuestion`, or to take its recommendation without asking if the decision is reversible, stays inside the current work, and has a clear recommendation. The model judges which case applies; the plugin does not.
 
 It does nothing if the turn already used `AskUserQuestion`, in non-interactive runs (`claude -p`), for subagent replies, for turns that ended in an abort or error, or on the turn immediately following a bounce (one bounce per question).
 
@@ -68,7 +69,8 @@ This section lists everything the plugin reads from the session and everything i
 
 ```
 [MOD ask-choice] Your last reply left a pick-one question for the user in prose.
-Re-ask it with AskUserQuestion: put the deciding facts and your recommendation in the question text and the option descriptions.
+If the decision is reversible, stays inside the current work and has a clear recommendation, do not ask: take the recommendation and report it in one line, without a question.
+Otherwise re-ask it with AskUserQuestion: put the deciding facts and your recommendation in the question text and the option descriptions.
 Do not repeat the report body. If the question truly needs a free-form answer, say so in one line.
 ```
 
